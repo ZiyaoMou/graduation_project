@@ -1,7 +1,7 @@
 
 
 ## Basic Usage
-```python
+```python 
 from simfaas.ServerlessSimulator import ServerlessSimulator as Sim
 
 sim = Sim(arrival_rate=0.9, warm_service_rate=1/1.991, cold_service_rate=1/2.244,
