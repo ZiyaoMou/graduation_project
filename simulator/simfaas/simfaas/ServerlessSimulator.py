@@ -36,9 +36,10 @@ class ServerlessSimulator:
     ValueError
         Raises if warm_service_rate is smaller than cold_service_rate
     """
+    #add preset_container into simulator args
     def __init__(self, arrival_process=None, warm_service_process=None, 
             cold_service_process=None, expiration_threshold=600, max_time=24*60*60,
-            maximum_concurrency=1000, **kwargs):
+            maximum_concurrency=1000, preset_servers_count=0,preset_servers=[],**kwargs):
         super().__init__()
         
         # setup arrival process
@@ -49,7 +50,7 @@ class ServerlessSimulator:
         # in the end, arrival process should be defined
         if self.arrival_process is None:
             raise Exception('Arrival process not defined!')
-
+        
         # force this only if we are running the current class, not a child class (cause they might work differently)
         if self.__class__ == ServerlessSimulator:
             # if both warm and cold service rate is provided (exponential distribution)
@@ -71,7 +72,13 @@ class ServerlessSimulator:
             self.cold_service_process = ExpSimProcess(rate=kwargs.get('cold_service_rate'))
         if self.cold_service_process is None:
             raise Exception('Cold Service process not defined!')
-
+        # new
+        # if user wants preset server
+        self.preset_servers_count=preset_servers_count
+        self.preset_servers=preset_servers
+        if preset_servers_count>0:
+            for i in range(preset_servers_count):
+                self.preset_servers.append(FunctionInstance(0,self.cold_service_process,self.warm_service_process,expiration_threshold=600000))
         self.expiration_threshold = expiration_threshold
         self.max_time = max_time
         self.maximum_concurrency = maximum_concurrency
@@ -89,10 +96,12 @@ class ServerlessSimulator:
         self.total_warm_count = 0
         self.total_reject_count = 0
         # current state of instances
-        self.servers = []
-        self.server_count = 0
-        self.running_count = 0
+        #self.servers = []
+        #self.server_count = 0
+        self.running_count = self.preset_servers_count
         self.idle_count = 0
+        self.servers = self.preset_servers
+        self.server_count = self.preset_servers_count
         # history results
         self.hist_times = []
         self.hist_server_count = []
@@ -113,6 +122,7 @@ class ServerlessSimulator:
         return len(self.servers) > 0
 
     def __str__(self):
+        
         return f"idle/running/total: \t {self.idle_count}/{self.running_count}/{self.server_count}"
 
     def req(self,time,i):

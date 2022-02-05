@@ -1,7 +1,7 @@
 '''
 Author: your name
 Date: 2021-12-20 22:35:52
-LastEditTime: 2021-12-22 09:49:20
+LastEditTime: 2022-02-05 09:24:32
 LastEditors: Please set LastEditors
 Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 FilePath: /simfaas/test.py
@@ -38,7 +38,7 @@ for row in gaps:
         count=count+1
         continue
 sim = Sim(ReqSimProcess(time=time_gap_list[0]),warm_service_rate=1/1.991,cold_service_rate=1/2.244,
-expiration_threshold=600,max_time=1e4)
+expiration_threshold=600,max_time=1e4,preset_servers_count=1)
 sim.generate_trace(debug_print=False,progress=True)
 sim.print_trace_results()
 #print (time_gap_list)

@@ -24,6 +24,7 @@ plot.
         self.has_pdf = False
         self.has_cdf = False
 
+
     def pdf(self, x):
         """pdf function is called for visualization for classes with `self.has_pdf = True`.
 
