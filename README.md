@@ -1,14 +1,14 @@
-面向工作流应用的Serverless平台  
+#面向工作流应用的Serverless平台  
 
-### 设计目标
+##设计目标
 
 ​	现有的Serverless计算平台资源调度的缺点也制约了工作流应用的性能。具体而言，现有的开源 Serverless计算平台缺少函数资源亲和性调度，这使得工作流应用函数调度在不同的服务器节点上，产生跨节点通信带来的额外开销；此外，绝大多数Serverless平台CPU与内存资源的等比分配策略也缺乏更多资源调度的灵活性。这种粗粒度的资源调度方式，无法适应不同函数对于资源的不同需求，过剩的内存与CPU资源也让工作流应用的资源利用率低下。
 ​	为此，本课题将基于目前主流的开源Serverless平台OpenWhisk，通过对实际Serverless工作流应用的部署与测量，分析平台的资源调度系统的行为；找出应用工作流与资源调度有关的性能瓶颈，并针对性地制定合理的资源调度策略，改进平台资源调度系统的架构，最终实现提升应用工作流性能与平台的资源利用率的目标。
 
-### 系统架构
+## 系统架构
 
 ![输入图片说明](sysanalysis/sysanalysis.png.png)
-### 目录说明
+##目录说明
 
 -essay(论文阅读)
 
@@ -30,9 +30,9 @@
 
 -readme.md（本说明文件）
 
-### 模拟器
+## 模拟器
 
-#### 设计目标
+### 设计目标
 
 - 基于SimfaaS这个比较基础的模拟器拓展功能
 
@@ -41,14 +41,14 @@
 - 使用真实函数的调用模式
 - 实现动态参数配置
 
-#### 模块功能
+### 模块功能
 
 ![simulatorModel](sysanalysis/simulatorModel.png.png)
 
 总的来说，FunctionInstance是server的原型，SimProcess是request、warm service和cold service的原型，容器状态变化、调用模拟、容器统计的基本模拟逻辑在ServerlessSimulator里。
 ![输入图片说明](sysanalysis/simulatorProcess.png.jpg)
 
-#### 使用方式
+### 使用方式
 
 - 基本使用
 
@@ -90,9 +90,9 @@ pip install e .
 python test.py
 ```
 
-#### 真实调用
+### 真实调用
 
-##### 数据来源
+#### 数据来源
 
 真实调用数据来自Azure function的数据集Azure-public-dataset[GItHub地址 GitHub - Azure/AzurePublicDataset: Microsoft Azure Traces](https://github.com/Azure/AzurePublicDataset)；使用论文Serverless in the Wild: Characterizing and Optimizing the Serverless Workload at a Large Cloud Provider的trace(https://github.com/Azure/AzurePublicDataset/blob/master/AzureFunctionsDataset2019.md进行模拟。
 
@@ -108,7 +108,7 @@ python test.py
 
 所有常驻或者分配的内存的平均值、最小值、最大值、样本数量
 
-##### **数据处理**
+#### **数据处理**
 
 通过生成伪随机数，将每个时间片的数据模拟成实时调用的函数间隔（IT）序列
 
@@ -146,7 +146,7 @@ for row in gaps:
         continue
 ```
 
-##### **进程模型**
+#### **进程模型**
 
 ```python
 class ReqSimProcess(SimProcess):
@@ -167,7 +167,7 @@ class ReqSimProcess(SimProcess):
         return time[i]
 ```
 
-##### 使用方式
+#### 使用方式
 
 ```python
 sim =Sim(ReqSimProcess(time=time_gap_list[0]),warm_service_rate=1/1.991,cold_service_rate=1/2.244,expiration_threshold=600,max_time=1e4,preset_servers_count=1)
@@ -175,9 +175,9 @@ sim.generate_trace(debug_print=False,progress=True)
 sim.print_trace_results()
 ```
 
-#### 多种冷启动策略
+### 多种冷启动策略
 
-##### 预置容器
+#### 预置容器
 
 增加simulator原型的参数preset_servers_count=0,preset_servers=[]，preset_servers_count代表预置容器数量，preset_server则表示容器数组，如果不填的话会默认创建和其他容器冷热启动模型一样的，但阈值更大（600000）的容器
 
