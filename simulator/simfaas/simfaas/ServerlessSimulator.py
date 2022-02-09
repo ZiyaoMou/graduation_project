@@ -1,11 +1,13 @@
 # The main simulator for serverless computing platforms
 
+from random import randrange
 from simfaas.SimProcess import ExpSimProcess
 from simfaas.FunctionInstance import FunctionInstance
 import numpy as np
 import pandas as pd
-
 from tqdm import tqdm
+
+
 
 class ServerlessSimulator:
     """ServerlessSimulator is responsible for executing simulations of a sample serverless computing platform, mainly for the performance analysis and performance model evaluation purposes.
@@ -39,9 +41,12 @@ class ServerlessSimulator:
     #add preset_container into simulator args
     def __init__(self, arrival_process=None, warm_service_process=None, 
             cold_service_process=None, expiration_threshold=600, max_time=24*60*60,
-            maximum_concurrency=1000, preset_servers_count=0,preset_servers=[],**kwargs):
+            maximum_concurrency=1000, preset_servers_count=0,preset_servers=[],hybrid_histogram=False,**kwargs):
         super().__init__()
-        
+        # if hybrid_histogram == True:
+        #     prewarm_window=0
+        #     keep_alive_window=240*60
+
         # setup arrival process
         self.arrival_process = arrival_process
         # if the user wants a exponentially distributed arrival process

@@ -119,6 +119,7 @@ from simfaas.ServerlessSimulator import ServerlessSimulator as Sim
 from simfaas.SimProcess import ReqSimProcess
 f=csv.reader(open('invocations_per_function_md.anon.d13.csv'))
 rows=[row for row in f]
+print rows
 gaps=[]
 for i in range(1,2):
     gap=rows[i][4:]
